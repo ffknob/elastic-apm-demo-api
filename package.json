@@ -2,6 +2,13 @@
   "name": "elastic-apm-demo-api",
   "version": "1.0.0",
   "description": "Elastic APM demo: API",
+  "author": "Flávio Franco Knob <ffknob@gmail.com> (http://ffknob.com)",
+  "license": "ISC",
+  "homepage": "https://github.com/ffknob/elastic-apm-demo-api#readme",
+  "bugs": {
+    "url": "https://github.com/ffknob/elastic-apm-demo-api/issues"
+  },
+  "keywords": [],
   "main": "index.js",
   "scripts": {
     "build": "tsc -p .",
@@ -41,7 +48,6 @@
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
-    "elastic-apm-node": "^3.6.1",
     "express": "^4.17.1",
     "express-winston": "^4.0.3",
     "winston": "^3.2.1"
