@@ -11,11 +11,13 @@
   "keywords": [],
   "main": "index.js",
   "scripts": {
+    "clean": "rm -rf dist/",
     "build": "tsc -p .",
     "start": "ts-node ./src/app.ts",
     "dev": "nodemon --watch \"src/\" --exec \"ts-node src/app.ts\" -e ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "test": "echo \"(todo)\""
   },
   "devDependencies": {
     "@ffknob/elastic-apm-demo-shared": "^1.0.21",
