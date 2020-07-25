@@ -2,7 +2,7 @@
   "name": "elastic-apm-demo-api",
   "version": "1.0.0",
   "description": "Elastic APM demo: API",
-  "author": "Flávio Franco Knob <ffknob@gmail.com> (http://ffknob.com)",
+  "author": "",
   "license": "ISC",
   "homepage": "https://github.com/ffknob/elastic-apm-demo-api#readme",
   "bugs": {
@@ -17,11 +17,8 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint src/**/*.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "@ffknob/elastic-apm-demo-shared": "^1.0.14",
+    "@ffknob/elastic-apm-demo-shared": "^1.0.21",
     "@types/cookie-parser": "^1.4.2",
     "@types/debug": "^4.1.5",
     "@types/dotenv": "^8.2.0",

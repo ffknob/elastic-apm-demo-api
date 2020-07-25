@@ -1,7 +1,11 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import ApmService from '@ffknob/elastic-apm-demo-shared';
+import {
+    ApmService,
+    BackendError,
+    GenericError
+} from '@ffknob/elastic-apm-demo-shared';
 
 import express, { Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
@@ -9,11 +13,6 @@ import bodyParser from 'body-parser';
 import winston from 'winston';
 import expressWinston from 'express-winston';
 import axios from 'axios';
-
-import {
-    SimulationResponseError,
-    BackendError
-} from '@ffknob/elastic-apm-demo-shared';
 
 const apmService = ApmService.getInstance();
 
@@ -65,27 +64,20 @@ app.use(
 
 app.use(
     (
-        err: SimulatedError<any>,
+        err: GenericError<any>,
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
-        apmService.captureError(err);
+        apmService.captureError(err.message!);
 
-        const simulationResponseError: SimulationResponseError<any> = {
-            success: false,
-            errors: [err]
-        };
-
-        const backendError: BackendError<SimulationResponseError<
-            SimulatedError<any>
-        >> = {
+        const backendError: BackendError<GenericError<any>> = {
             id: res.locals.id,
             success: false,
             statusCode: err.code ? +err.code : 500,
             statusMessage: err.message || 'Internal Server Error',
             metadata: res.locals.metadata,
-            data: simulationResponseError
+            data: err
         };
 
         res.status(err.code ? +err.code : 500).json(backendError);
