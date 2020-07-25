@@ -84,6 +84,6 @@ app.use(
     }
 );
 
-const PORT: Number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+const PORT: Number = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
