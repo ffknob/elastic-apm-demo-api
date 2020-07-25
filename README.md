@@ -11,5 +11,5 @@ ELASTIC_APM_SECRET_TOKEN=...
 PORT=3000
 SIMULATION_SERVICE_URL=http://localhost:3001
 AUTH_SERVICE_URL=http://localhost:3002
-DATA_SERVICE_URL=http://localhost:5003
+DATA_SERVICE_URL=http://localhost:3003
 ```
