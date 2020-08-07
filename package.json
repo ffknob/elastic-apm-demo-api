@@ -20,7 +20,7 @@
     "test": "echo \"(todo)\""
   },
   "devDependencies": {
-    "@ffknob/elastic-apm-demo-shared": "^1.0.21",
+    "@ffknob/elastic-apm-demo-shared": "^1.0.22",
     "@types/cookie-parser": "^1.4.2",
     "@types/debug": "^4.1.5",
     "@types/dotenv": "^8.2.0",

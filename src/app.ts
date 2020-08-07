@@ -12,7 +12,8 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import winston from 'winston';
 import expressWinston from 'express-winston';
-import axios from 'axios';
+
+import { requestParser, requestLimit, requestProxy } from './middlewares';
 
 const apmService = ApmService.getInstance();
 
@@ -51,16 +52,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-app.use(
-    '/api/v1/simulate',
-    (req: Request, res: Response, next: NextFunction) => {
-        axios
-            .post(`${process.env.SIMULATION_SERVICE_URL}/success`, {
-                ...req.body
-            })
-            .then((data: any) => res.json(data));
-    }
-);
+app.use('/api/v1', requestParser, requestLimit, requestProxy);
 
 app.use(
     (
@@ -84,6 +76,6 @@ app.use(
     }
 );
 
-const PORT: Number = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
