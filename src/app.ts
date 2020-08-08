@@ -14,7 +14,7 @@ import bodyParser from 'body-parser';
 import winston from 'winston';
 import expressWinston from 'express-winston';
 
-import { requestParser, requestLimit, requestProxy } from './middlewares';
+import apiRoutes from './routes/api';
 
 const apmService = ApmService.getInstance();
 
@@ -53,7 +53,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-app.use('/api/v1', requestParser, requestLimit, requestProxy);
+app.use('/api/v1', apiRoutes);
 
 app.use(
     (
