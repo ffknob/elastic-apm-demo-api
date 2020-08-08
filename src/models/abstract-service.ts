@@ -1,15 +1,16 @@
 import { GenericError } from '@ffknob/elastic-apm-demo-shared';
 
-export class Service {
-    static SERVICE_NAME: string;
-    static SERVICE_URL: string | undefined;
+import { Service } from '../shared/interfaces';
+
+export abstract class AbstractService implements Service {
+    abstract SERVICE_NAME: string;
+    abstract SERVICE_URL?: string;
+
+    abstract getName(): string;
 
     getUrl(path?: string): string {
-        const serviceUrl: string | undefined =
-            process.env.SIMULATION_SERVICE_URL;
-
-        if (serviceUrl) {
-            let url: string = serviceUrl;
+        if (this.SERVICE_URL) {
+            let url: string = this.SERVICE_URL;
 
             if (path) {
                 url = url.replace(/\/$/, '') + path;

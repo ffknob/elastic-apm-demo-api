@@ -2,30 +2,28 @@ import { GenericError } from '@ffknob/elastic-apm-demo-shared';
 
 import { LoggerService } from '@ffknob/elastic-apm-demo-shared';
 
-import { Service } from './service';
+import { AbstractService } from './abstract-service';
 import { SimulationService } from './simulation-service';
 import { AuthService } from './auth-service';
 import { DataService } from './data-service';
 
 export class ServiceFactory {
-    static create(serviceName: string): Service {
-        let service: Service;
+    static create(serviceName: string): AbstractService {
+        const availableServices: AbstractService[] = [
+            new SimulationService(),
+            new AuthService(),
+            new DataService()
+        ];
 
-        switch (serviceName) {
-            case SimulationService.SERVICE_NAME:
-                service = new SimulationService();
-                break;
-            case AuthService.SERVICE_NAME:
-                service = new AuthService();
-                break;
-            case DataService.SERVICE_NAME:
-                service = new DataService();
-                break;
-            default:
-                throw <GenericError<any>>{
-                    code: 404,
-                    message: `Service not available: ${serviceName}`
-                };
+        const service: AbstractService | undefined = availableServices.find(
+            (s: AbstractService) => s.SERVICE_NAME === serviceName
+        );
+
+        if (!service) {
+            throw <GenericError<any>>{
+                code: 404,
+                message: `Service not available: ${serviceName}`
+            };
         }
 
         LoggerService.logger.debug(`Service ${serviceName} created`);

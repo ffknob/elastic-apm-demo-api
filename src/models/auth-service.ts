@@ -1,6 +1,10 @@
-import { Service } from './service';
+import { AbstractService } from './abstract-service';
 
-export class AuthService extends Service {
-    static SERVICE_NAME = 'auth';
-    static SERVICE_URL = process.env.AUTH_SERVICE_URL;
+export class AuthService extends AbstractService {
+    SERVICE_NAME = 'auth';
+    SERVICE_URL = process.env.AUTH_SERVICE_URL;
+
+    getName(): string {
+        return this.SERVICE_NAME;
+    }
 }

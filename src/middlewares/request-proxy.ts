@@ -5,7 +5,7 @@ import axios from 'axios';
 import { LoggerService, GenericError } from '@ffknob/elastic-apm-demo-shared';
 
 import { ApiRequestLocals } from '../shared/interfaces';
-import { Service, ServiceFactory } from '../models';
+import { AbstractService, ServiceFactory } from '../models';
 
 export const requestProxy = (
     req: Request,
@@ -28,7 +28,7 @@ export const requestProxy = (
         return;
     }
 
-    const service: Service = ServiceFactory.create(serviceName);
+    const service: AbstractService = ServiceFactory.create(serviceName);
 
     const serviceUrl: string = service.getUrl(path);
 
