@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import axios from 'axios';
 
-import { GenericError } from '@ffknob/elastic-apm-demo-shared';
+import { LoggerService, GenericError } from '@ffknob/elastic-apm-demo-shared';
 
 import { ApiRequestLocals } from '../shared/interfaces';
 import { Service, ServiceFactory } from '../models';
@@ -31,6 +31,10 @@ export const requestProxy = (
     const service: Service = ServiceFactory.create(serviceName);
 
     const serviceUrl: string = service.getUrl(path);
+
+    LoggerService.logger.debug(
+        `Sending ${req.method} request to ${serviceUrl}`
+    );
 
     switch (req.method) {
         case 'GET':

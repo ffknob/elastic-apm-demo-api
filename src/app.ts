@@ -3,6 +3,7 @@ dotenv.config();
 
 import {
     ApmService,
+    LoggerService,
     BackendError,
     GenericError
 } from '@ffknob/elastic-apm-demo-shared';
@@ -26,7 +27,7 @@ app.use(cookieParser());
 app.use(
     expressWinston.logger({
         transports: [new winston.transports.Console()],
-        meta: true,
+        meta: false,
         msg: 'HTTP {{req.method}} {{req.url}}',
         expressFormat: true,
         colorize: false
@@ -61,6 +62,8 @@ app.use(
         res: Response,
         next: NextFunction
     ) => {
+        LoggerService.logger.error(err.message);
+
         apmService.captureError(err.message!);
 
         const backendError: BackendError<GenericError<any>> = {
