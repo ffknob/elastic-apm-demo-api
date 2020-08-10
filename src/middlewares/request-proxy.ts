@@ -48,7 +48,18 @@ export const requestProxy = (
                 .post(serviceUrl, {
                     ...req.body
                 })
-                .then(({ data }: any) => res.json(data))
+                .then(({ headers, data }: any) => {
+                    switch (headers['content-type']) {
+                        case 'text/html':
+                            res.send(data);
+                            break;
+                        case 'application/json':
+                            res.json(data);
+                            break;
+                        default:
+                            res.send(data);
+                    }
+                })
                 .catch(err => next(err));
             break;
         case 'OPTIONS':
