@@ -9,10 +9,14 @@ export const requestParser = (
 ) => {
     const splittedPath = req.originalUrl.split('/');
 
+    const apiVersion: string = splittedPath[2];
+    const serviceName: string = splittedPath[3];
+    const path: string = '/' + splittedPath.slice(4).join('/');
+
     const apiRequestLocals: ApiRequestLocals = {
-        apiVersion: splittedPath[2],
-        serviceName: splittedPath[3],
-        path: '/' + splittedPath.slice(4).join('/')
+        apiVersion,
+        serviceName,
+        path
     };
 
     res.locals = { ...res.locals, ...apiRequestLocals };
