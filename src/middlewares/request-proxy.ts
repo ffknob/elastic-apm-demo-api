@@ -47,27 +47,41 @@ export const requestProxy = (
         const data: any = response.data;
 
         if (status === 302) {
+            console.log(serviceResponse);
             const location: string = headers.location;
+            const url: URL = new URL(location);
+            const noWrapper: boolean =
+                url.searchParams.get('noWrapper') !== null;
+
+            console.log(url);
 
             LoggerService.logger.debug(`Redirecting to ${location}`);
 
-            const backendRedirect: BackendRedirect<any> = {
-                success: true,
-                statusCode: 302,
-                statusMessage: 'Redirection',
-                location
-            };
-
-            res.json(backendRedirect);
+            if (noWrapper) {
+                res.redirect(location);
+            } else {
+                const backendRedirect: BackendRedirect<any> = {
+                    success: true,
+                    statusCode: 302,
+                    statusMessage: 'Redirection',
+                    location
+                };
+                res.json(backendRedirect);
+            }
         } else {
             switch (headers['content-type']) {
                 case 'text/html':
+                    LoggerService.logger.debug(`Sending text/html response`);
                     res.send(data);
                     break;
                 case 'application/json':
+                    LoggerService.logger.debug(
+                        `Sending application/json response`
+                    );
                     res.json(data);
                     break;
                 default:
+                    LoggerService.logger.debug(`Sending default response`);
                     res.send(data);
             }
         }
