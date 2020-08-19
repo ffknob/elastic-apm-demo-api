@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 
 import axios, { Method, AxiosResponse, AxiosError } from 'axios';
 
+//import proxy from 'express-http-proxy';
+import { createProxyMiddleware as proxy } from 'http-proxy-middleware';
+
 import {
     BackendRedirect,
     LoggerService,
@@ -10,6 +13,7 @@ import {
 
 import { ApiRequestLocals } from '../shared/interfaces';
 import { AbstractService, ServiceFactory } from '../models';
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http';
 
 export const requestProxy = (
     req: Request,
@@ -19,7 +23,8 @@ export const requestProxy = (
     const {
         serviceName,
         apiVersion,
-        path
+        path,
+        servicePath
     }: ApiRequestLocals = res.locals as ApiRequestLocals;
 
     if (!serviceName) {
@@ -34,11 +39,27 @@ export const requestProxy = (
 
     const service: AbstractService = ServiceFactory.create(serviceName);
 
+    const serviceHost: string = service.getHost();
     const serviceUrl: string = service.getUrl(path);
 
     LoggerService.logger.debug(
         `Sending ${req.method} request to ${serviceUrl}`
     );
+
+    return proxy(path, {
+        target: serviceHost,
+        changeOrigin: true,
+        pathRewrite: {
+            [path]: servicePath
+        }
+    });
+
+    /*
+    return proxy(serviceHost, {
+        proxyReqPathResolver: (req: Request) => path
+    })(req, res, next);
+    /*
+/*
 
     const sendResponse = (serviceResponse: any) => {
         const response: AxiosResponse = serviceResponse['response'];
@@ -47,13 +68,10 @@ export const requestProxy = (
         const data: any = response.data;
 
         if (status === 302) {
-            console.log(serviceResponse);
             const location: string = headers.location;
             const url: URL = new URL(location);
             const noWrapper: boolean =
                 url.searchParams.get('noWrapper') !== null;
-
-            console.log(url);
 
             LoggerService.logger.debug(`Redirecting to ${location}`);
 
@@ -87,31 +105,36 @@ export const requestProxy = (
         }
     };
 
-    axios
-        .request({
-            url: serviceUrl,
-            method: req.method as Method,
-            headers: req.headers,
-            data: req.body,
-            maxRedirects: 0
-        })
-        .then((serviceResponse: AxiosResponse) => {
-            sendResponse(serviceResponse);
-        })
-        .catch((err: AxiosError) => {
-            const response: AxiosResponse | undefined = err['response'];
+    try {
+        axios
+            .request({
+                url: serviceUrl,
+                method: req.method as Method,
+                headers: req.headers,
+                data: req.body,
+                maxRedirects: 0
+            })
+            .then((serviceResponse: AxiosResponse) => {
+                sendResponse(serviceResponse);
+            })
+            .catch((err: AxiosError) => {
+                const response: AxiosResponse | undefined = err['response'];
 
-            if (!response) {
-                next(err);
-            } else {
-                const status: number = response.status;
-
-                // Redirects (302) will be caught as errors
-                if (status === 302) {
-                    sendResponse(err);
-                } else {
+                if (!response) {
                     next(err);
+                } else {
+                    const status: number = response.status;
+
+                    // Redirects (302) will be caught as errors
+                    if (status === 302) {
+                        sendResponse(err);
+                    } else {
+                        next(err);
+                    }
                 }
-            }
-        });
+            });
+    } catch (err) {
+        next(err);
+    }
+*/
 };

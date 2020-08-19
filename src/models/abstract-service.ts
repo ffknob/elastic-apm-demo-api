@@ -8,6 +8,19 @@ export abstract class AbstractService implements Service {
 
     abstract getName(): string;
 
+    getHost(): string {
+        if (this.SERVICE_URL) {
+            const url: URL = new URL(this.SERVICE_URL);
+
+            return url.origin;
+        } else {
+            throw <GenericError<any>>{
+                code: 500,
+                message: `Could not determine service host.`
+            };
+        }
+    }
+
     getUrl(path?: string): string {
         if (this.SERVICE_URL) {
             let url: string = this.SERVICE_URL;
@@ -20,7 +33,7 @@ export abstract class AbstractService implements Service {
         } else {
             throw <GenericError<any>>{
                 code: 500,
-                message: `Could not determine service url`
+                message: `Could not determine service url.`
             };
         }
     }

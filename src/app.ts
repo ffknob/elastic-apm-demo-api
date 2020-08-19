@@ -9,6 +9,7 @@ import {
 } from '@ffknob/elastic-apm-demo-shared';
 
 import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import winston from 'winston';
@@ -20,6 +21,7 @@ const apmService = ApmService.getInstance();
 
 const app = express();
 
+app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -39,19 +41,6 @@ app.use(
         transports: [new winston.transports.Console()]
     })
 );
-
-app.use((req: Request, res: Response, next: NextFunction) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept'
-    );
-    res.setHeader(
-        'Access-Control-Allow-Methods',
-        'POST, GET, PATCH, DELETE, OPTIONS'
-    );
-    next();
-});
 
 app.use('/api/v1', apiRoutes);
 
